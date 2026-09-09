@@ -30,4 +30,5 @@ describing this dataset, not the full historical event, in any write-up.
 **8.** There are total 891 passengers travelling in Titanic. There is no missing value in Survived data. After finding - 342 passengers survived and rest 549 not survived\\
   
 - Duplicated rows and duplicated ids\
-  No duplicate rows and no duplicate ids — this dataset does not need de-duplication.
+  No duplicate rows and no duplicate ids — this dataset does not need de-duplication.\\
+- As per the findings, there is no impossible values in the dataset.
