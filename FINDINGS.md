@@ -40,3 +40,9 @@ describing this dataset, not the full historical event, in any write-up.
 - It's the value the Kaggle competition itself asks you to predict.
 - There are total 891 passengers travelling in Titanic. There is no missing value in Survived data. After finding - 342 passengers survived and rest 549 not survived.
 - 61.6% died and 38.4% survived, so a model that always predicts "died" already.
+  
+**Skew:** Survived has more 0s than 1s. Therefore its mean is 0.384 while its median is 0. But don't treat this as the usual continuous-variable skewness that requires a log transformation. This is mainly telling us that the target classes are imbalanced: 61.6% died and 38.4% survived. When building the model, preserve this ratio using a stratified split and don't judge the model using accuracy alone.
+
+**Outliers:** outlier analysis in the usual sense does not apply to a binary target.
+- there is no "extreme" value of 0 or 1. The honest thing to do is say so rather than force the check. 
+- The nearest useful analogue is outliers in `Fare`, the most skewed numeric feature associated with the target, checked next.
