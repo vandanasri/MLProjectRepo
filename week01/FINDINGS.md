@@ -1,5 +1,5 @@
 # Findings — Project 1: EDA on the Titanic Dataset
-  Full code and plots for every finding below are in `Titanic.ipynb`.
+  Full code and plots for every finding below are in `project1_eda.ipynb`.
 
 ## Dataset Overview
 **1.** The dataset has 891 rows and 12 columns.\
@@ -70,5 +70,16 @@ historical context.
 -*(Risk)* Survival on this voyage was mechanistically produced by the evacuation policy actually followed (women/children first, class-based deck and lifeboat access) — `Sex`, `Pclass`, and `Age` were not just correlated with survival, they were causally upstream of who reached a lifeboat. A model trained here is closer to reconstructing this one incident's known, explicit prioritization policy than to learning a transferable "who survives a maritime disaster" rule. **Action:** do not present this model's feature importances as general disaster-survival factors outside the historical context of this specific ship and policy.
 
 -*(Risk)* `Cabin`/`HasCabin` missingness is not at random and is highly redundant with `Pclass` (77% missing overall, but 97.6% missing in 3rd class vs. 18.5% in 1st) — an engineered `HasCabin` flag mostly re-encodes ticket class rather than adding independent information, so a model that appears to gain accuracy from cabin-derived features may just be double-counting the same `Pclass` signal through two columns, inflating its apparent feature importance. **Action:** if `HasCabin` is used, check its marginal contribution over `Pclass` alone before trusting its importance score.
+
+## Next Steps
+
+- Cast `Pclass` and `Survived` to categorical dtype; drop `PassengerId` before any
+  modelling step.
+- Engineer `FamilySize`, `Title`, and treat `HasCabin` cautiously given its overlap with `Pclass`.
+- Use `log1p(Fare)` rather than raw `Fare`.
+- Use `GroupKFold` on `Ticket` (or family surname) combined with stratification on `Survived`, rather than a plain random split, for any cross-validation.
+- If `Age` is imputed for modelling, impute conditional on `Pclass`/`Title`, not with a single global value.
+- Treat any resulting model's feature importances as specific to this ship and this voyage's evacuation policy, not a general theory of disaster survival (Risk 15).
+- A baseline logistic regression on `Sex`, `Pclass`, and binned `FamilySize` alone should be tried first — given Finding 10 and 12, these three features likely carry most of the learnable signal, and a simple baseline should be beaten before trusting a more complex model's added value.
 
 
