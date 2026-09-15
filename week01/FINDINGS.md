@@ -26,7 +26,8 @@ describing this dataset, not the full historical event, in any write-up.
 **4.** `Age` has 177 missing data with 19.87% in entire 891 rows.\
 **5.** `Embarked` has least 2 missing values with 0.22%.\
 **6.** If we compare Cabin data according to Pclass, i.e which passenger `pclass` has most `cabin` missing data. Then it is found that  Pclass has 3 classes [1, 2, 3]. Now, getting the missing values of cabin according to passenger class. According to the observation Pclass-3 has the most missing cabin values almost 97.5, then pclass-2 has 91.3 missing cabins and pclass-1 has the least missing cabin values 18.5.\
-**7.** After comparing Age according to the `Pclass`, the findings are - 3 class passengers has most missing values 27.7, 2 class pessengers has least missing values 5.98 and 1 class has 13.89 missing values. Titanic has highest numbers of Young adult passengers.
+**7.** After comparing Age according to the `Pclass`, the findings are - 3 class passengers has most missing values 27.7, 2 class pessengers has least missing values 5.98 and 1 class has 13.89 missing values. Titanic has highest numbers of Young adult passengers.\
+**8** The Embarked column with almost no missing data — just 2 rows out of 891.
   
 - Duplicated rows and duplicated id
   No duplicate rows and no duplicate ids — this dataset does not need de-duplication.
@@ -46,3 +47,17 @@ describing this dataset, not the full historical event, in any write-up.
 **Outliers:** outlier analysis in the usual sense does not apply to a binary target.
 - there is no "extreme" value of 0 or 1. The honest thing to do is say so rather than force the check. 
 - The nearest useful analogue is outliers in `Fare`, the most skewed numeric feature associated with the target, checked next.
+- Solo travellers (family size 1) survived at 30.4%, family sizes 2–4 survived at 55–72%, and family sizes ≥5 dropped back to 0–33%. And large family rate is worse.
+- Embarked: records which port a passenger boarded the Titanic from. Code Port and their servival rate:- S Southampton, England — 55.4% C Cherbourg, France - 39% Q Queenstown, Ireland - 33.7%.
+
+## Relationships
+
+- `Sex` is the single strongest univariate split in the dataset — 74.2%
+survival for female passengers vs. 18.9% for male.
+**Action:** do not present a `Sex`-driven model as a generalizable "who survives a shipwreck" rule outside this
+historical context.
+
+- `Fare` correlates with `Survived` at r = 0.26, but `Fare` also correlates far more strongly with `Pclass` at r = −0.55, and `Pclass` alone. the class-based survival gap (63% → 47% → 24% across classes 1→2→3). So `Fare` and `Pclass` are largely capturing the same underlying deck/lifeboat access effect, and crediting `Fare` in isolation risks double-counting a class effect.
+**Action:** interpret `Fare` and `Pclass` together in any model, or check for multicollinearity before assuming both contribute independent signal.
+  
+- `FamilySize` (`SibSp + Parch + self`) has an almost-zero, non-significant linear correlation with `Survived` (Pearson r = 0.017, p = 0.62), which would wrongly suggest family size doesn't matter. But the true relationship is a strong inverted: solo travellers survived at 30.4%, families of 2–4 at 55–72%, and families of 5+ back down to 0–33%. This is the misleading-correlation case the brief specifically asks for: a linear coefficient hides a real, non-linear pattern. **Action:** enter `FamilySize` into any model as a binned categorical term (alone / small / large), not as a raw linear numeric feature.
