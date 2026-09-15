@@ -20,3 +20,23 @@
   
 - **Collected:** the manifest describes the ship's actual 15 April 1912 voyage; the
   Kaggle competition itself has been running since 2012 and periodically re-serves
+
+## What's in this folder
+
+```
+week01/
+  project1_eda.ipynb   the analysis notebook (R1–R7)
+  FINDINGS.md           the written findings document (R5)
+  README.md             this file
+```
+
+## How to run
+1. Requirements: Python 3.10+, with `pandas`, `numpy`, `matplotlib`, `seaborn`
+2. Open `project1_eda.ipynb` in Colab Notebook and **Connect & Run All**. Create folder `/content/TitanicEDA` and keep file train_titanic.csv in `TitanicEDA` folder.
+3. The notebook runs top-to-bottom cleanly in under 10 seconds on a fresh kernel (verified before submission).
+
+## Notes on the data itself
+
+- One row = one passenger with a known survival out. Total there are 891 rows.
+- The dataset is intentionally messy: ~20% of `Age` is missing, ~77% of `Cabin` is missing, and a small sentinel-like group of 15 zero-fare passengers turns out to be a historical anomaly rather than a data-entry error.
+- Full detail in `FINDINGS.md`.
