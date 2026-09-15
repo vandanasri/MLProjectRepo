@@ -61,3 +61,14 @@ historical context.
 **Action:** interpret `Fare` and `Pclass` together in any model, or check for multicollinearity before assuming both contribute independent signal.
   
 - `FamilySize` (`SibSp + Parch + self`) has an almost-zero, non-significant linear correlation with `Survived` (Pearson r = 0.017, p = 0.62), which would wrongly suggest family size doesn't matter. But the true relationship is a strong inverted: solo travellers survived at 30.4%, families of 2–4 at 55–72%, and families of 5+ back down to 0–33%. This is the misleading-correlation case the brief specifically asks for: a linear coefficient hides a real, non-linear pattern. **Action:** enter `FamilySize` into any model as a binned categorical term (alone / small / large), not as a raw linear numeric feature.
+
+## Risks
+-*(Risk)* 134 tickets are shared by 2 or more passengers travelling together (families, groups), so rows in this dataset are not independent — a plain random train/test split can place some members of a travel group in train and others in test, leaking group-level survival patterns (families tended to survive or die together) into evaluation and inflating apparent model performance.
+
+-*(Risk)* Several categories are effectively singletons — title values such as "Countess", "Jonkheer", "Capt", "Don", "Sir", "Lady", "Mme" each appear exactly once, and `Embarked == 'Q'` is only 8.6% of rows — so a random split, especially a small one, can strand a category entirely in the test fold with zero training examples, breaking a one-hot encoder at inference time with an unseen-category error. **Action:** bucket rare titles into an "Other" category before encoding, and use a stratified split on at least `Pclass`/`Embarked`/`Sex`.
+
+-*(Risk)* Survival on this voyage was mechanistically produced by the evacuation policy actually followed (women/children first, class-based deck and lifeboat access) — `Sex`, `Pclass`, and `Age` were not just correlated with survival, they were causally upstream of who reached a lifeboat. A model trained here is closer to reconstructing this one incident's known, explicit prioritization policy than to learning a transferable "who survives a maritime disaster" rule. **Action:** do not present this model's feature importances as general disaster-survival factors outside the historical context of this specific ship and policy.
+
+-*(Risk)* `Cabin`/`HasCabin` missingness is not at random and is highly redundant with `Pclass` (77% missing overall, but 97.6% missing in 3rd class vs. 18.5% in 1st) — an engineered `HasCabin` flag mostly re-encodes ticket class rather than adding independent information, so a model that appears to gain accuracy from cabin-derived features may just be double-counting the same `Pclass` signal through two columns, inflating its apparent feature importance. **Action:** if `HasCabin` is used, check its marginal contribution over `Pclass` alone before trusting its importance score.
+
+
