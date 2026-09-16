@@ -28,6 +28,7 @@ week01/
   project1_eda.ipynb   the analysis notebook (R1–R7)
   FINDINGS.md           the written findings document (R5)
   README.md             this file
+  train_titanic.csv     required csv file of titanic
 ```
 
 ## How to run
